@@ -14,13 +14,14 @@ services:
 
 
  backend-django:
-   build: ./app
+   build: ./backend
    environment:
     - PYTAILWIND_BIN_PATH=/app/theme/bin/tailwindcss
     - DEBUG=True
    volumes:
     - ./backend:/app
    container_name: backend-django
+   working_dir: /app
    ports:
      - "8080:8080"
    env_file:
