@@ -20,7 +20,7 @@
                         <td class="w-2 px-3 py-1 lg:px-6 md:py-4 font-medium whitespace-nowrap">{{ auditoria.nombre_archivo }}</td>
                         <td class="px-3 py-1 lg:px-6 md:py-4">{{ auditoria.cliente }}</td>
                         <td class="px-3 py-1 lg:px-6 md:py-4">{{ auditoria.tipo }}</td>
-                        <td class="px-3 py-1 lg:px-6 md:py-4">{{ auditoria.fecha.day }}/{{ auditoria.fecha.month }}/{{ auditoria.fecha.year }} {{ auditoria.fecha.hour }}:{{ auditoria.fecha.minute }}</td>
+                        <td class="px-3 py-1 lg:px-6 md:py-4">{{ auditoria.fecha|date:"d/m/Y H:i" }}</td>
                         <td class="px-3 py-1 lg:px-6 md:py-4">
                             {% if auditoria.banderas_rojas %}
                                 <p class="text-red-500">Banderas Rojas</p>
