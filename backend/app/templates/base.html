@@ -1,0 +1,25 @@
+{% load tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    {% tailwind_css %}
+</head>
+<body class="h-screen">
+    <header class="h-1/12 flex items-center justify-center bg-[#CCCCCC]">
+        <nav class="flex items-center justify-between px-2 w-full md:w-1/2">
+            <a class="font-bold text-center p-2" href="{% url 'listado' %}">INICIO</a>
+            <a class="font-bold text-center p-2" href="{% url 'cargar' %}">AUDITORÍA</a>
+            <form action="/logout/" method="post">
+                {% csrf_token %}
+                <button class="cursor-pointer font-bold p-2 text-center" type="submit">CERRAR SESIÓN</button>
+            </form>
+        </nav>
+    </header>
+
+    {% block content %}{% endblock %}
+</body>
+</html>

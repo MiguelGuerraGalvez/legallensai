@@ -1,0 +1,55 @@
+services:
+ db-legal:
+   image: postgres:15-alpine
+   container_name: db-legal
+   restart: always
+   environment:
+     - POSTGRES_USER=${DB_USER}
+     - POSTGRES_PASSWORD=${DB_PASSWORD}
+     - POSTGRES_DB=${DB_NAME}
+   ports:
+     - "5433:5432"
+   volumes:
+     - postgres_data:/var/lib/postgresql/data
+
+
+ backend-django:
+   build: ./app
+   environment:
+    - PYTAILWIND_BIN_PATH=/app/theme/bin/tailwindcss
+    - DEBUG=True
+   volumes:
+    - ./backend:/app
+   container_name: backend-django
+   ports:
+     - "8080:8080"
+   env_file:
+     - .env
+   command: python manage.py runserver 0.0.0.0:8080
+   depends_on:
+     - db-legal
+
+
+ ai-engine:
+   build: ./ai-engine
+   container_name: ai-engine
+   ports:
+    - "8000:8000"
+   env_file:
+    - .env
+   depends_on:
+    - db-legal
+
+
+ nginx:
+   image: nginx:latest
+   volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+   ports:
+      - "80:80"
+   depends_on:
+      - backend-django
+      - ai-engine
+
+volumes:
+ postgres_data:

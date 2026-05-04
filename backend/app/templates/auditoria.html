@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Auditoría{% endblock %}
+
+{% block content %}
+    <article class="w-full p-4">
+        <h1 class="font-bold text-center text-2xl">AUDITORÍA</h1>
+    </article>
+
+    <main class="w-full flex flex-col-reverse lg:flex-row justify-around items-center xl:items-start p-4">
+        <section class="h-1/2 w-3/4 lg:w-1/2 xl:w-5/12 flex flex-col items-center justify-evenly p-2">
+            <div class="w-full flex items-center justify-around font-bold text-center py-2">
+                <button class="cursor-pointer underline" id="pagina_anterior">Anterior</button>
+                <p>Página <span id="pagina_actual">1</span> de <span id="paginas_totales">-</span></p>
+                <button class="cursor-pointer underline" id="pagina_siguiente">Siguiente</button>
+            </div>
+
+            <div class="flex items-center justify-center">
+                <canvas class="max-w-full border shadow-lg" id="pdf-canvas"></canvas>
+            </div>
+        </section>
+    
+        <section class="w-full lg:w-1/2 flex flex-col items-start justify-around p-4">
+            <h2 class="w-full font-bold text-center text-2xl">Informe</h2>
+            
+            {% if respuesta.2.Error %}
+                <h3 class="font-bold text-xl underline">ERROR</h3>
+                <p class="text-red-700">{{ respuesta.2.Error }}</p>
+            {% else %}
+                <h3 class="font-bold text-xl underline">Puntos clave:</h3>
+                {% for punto_clave in respuesta.1.puntos_clave %}
+                    <p>{{ punto_clave }}</p>
+                {% endfor %}
+    
+                <h3 class="font-bold text-xl underline">Banderas rojas:</h3>
+                {% if respuesta.1.banderas_rojas %}
+                    {% for bandera_roja in respuesta.1.banderas_rojas %}
+                        <p>{{ bandera_roja }}</p>
+                    {% endfor %}
+                {% else %}
+                    <p>No hay banderas rojas.</p>
+                {% endif %}
+                
+                <h3 class="font-bold text-xl underline">Riesgo total:</h3>
+                <p>{{ respuesta.1.riesgo_total }}</p>
+            {% endif %}
+        </section>
+    </main>
+
+    <article class="h-1/12 w-full flex items-end justify-end px-10">
+        <a class="font-bold text-right text-lg" href="/">VOLVER</a>
+    </article>
+
+    <script>
+        window.addEventListener("load", function() {
+            let url;
+            {% if respuesta.2.Error %}
+                const pdfData = atob("{{ respuesta.1.archivo }}")
+                url = { data: pdfData }
+            {% else %}
+                url = "{{ respuesta.1.archivo.url }}";
+            {% endif %}
+            pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
+            const loadingTask = pdfjsLib.getDocument(url);
+
+            const scale = 1.5;
+            const canvas = document.getElementById('pdf-canvas');
+            const context = canvas.getContext('2d');
+            let n_pagina = 1;
+            let pdfDoc = null;
+            
+            function renderPage(n) {
+                pdfDoc.getPage(n).then(pagina => {
+                    const viewport = pagina.getViewport({ scale });
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    
+                    pagina.render(renderContext);
+
+                    document.getElementById("pagina_actual").textContent = n;
+                });
+            }
+
+            pdfjsLib.getDocument(url).promise.then(pdf => {
+                pdfDoc = pdf;
+                document.getElementById("paginas_totales").textContent = pdf.numPages;
+                renderPage(n_pagina);
+            });
+
+            document.getElementById("pagina_anterior").addEventListener("click", () => {
+                if (n_pagina <= 1) return;
+                n_pagina--;
+                renderPage(n_pagina);
+            });
+
+            document.getElementById("pagina_siguiente").addEventListener("click", () => {
+                if (n_pagina >= pdfDoc.numPages) return;
+                n_pagina++;
+                renderPage(n_pagina);
+            })
+        });
+    </script>
+{% endblock %}

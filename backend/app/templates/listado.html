@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Listado{% endblock %}
+
+{% block content %}
+    <main class="h-11/12 flex items-center justify-center overflow-x-auto relative">
+        <table class="w-10/12 border border-black rounded-b-md text-xs md:text-lg text-center overflow-scroll">
+            <thead class="md:text-lg bg-neutral-300 border-b border-black">
+                <tr>
+                    <th class="px-3 py-1 lg:px-6 md:py-3 font-medium">Nombre Archivo</th>
+                    <th class="px-3 py-1 lg:px-6 md:py-3 font-medium">Cliente</th>
+                    <th class="px-3 py-1 lg:px-6 md:py-3 font-medium">Tipo</th>
+                    <th class="px-3 py-1 lg:px-6 md:py-3 font-medium">Fecha</th>
+                    <th class="px-3 py-1 lg:px-6 md:py-3 font-medium">Badge Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for auditoria in auditorias %}
+                    <tr class="bg-neutral-100 border-b border-black">
+                        <td class="w-2 px-3 py-1 lg:px-6 md:py-4 font-medium whitespace-nowrap">{{ auditoria.nombre_archivo }}</td>
+                        <td class="px-3 py-1 lg:px-6 md:py-4">{{ auditoria.cliente }}</td>
+                        <td class="px-3 py-1 lg:px-6 md:py-4">{{ auditoria.tipo }}</td>
+                        <td class="px-3 py-1 lg:px-6 md:py-4">{{ auditoria.fecha.day }}/{{ auditoria.fecha.month }}/{{ auditoria.fecha.year }} {{ auditoria.fecha.hour }}:{{ auditoria.fecha.minute }}</td>
+                        <td class="px-3 py-1 lg:px-6 md:py-4">
+                            {% if auditoria.banderas_rojas %}
+                                <p class="text-red-500">Banderas Rojas</p>
+                            {% else %}
+                                <p class="text-green-500">Limpio</p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+{% endblock %}

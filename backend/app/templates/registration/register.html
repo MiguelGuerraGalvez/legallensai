@@ -1,0 +1,60 @@
+{% load tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    {% tailwind_css %}
+</head>
+<body class="h-screen flex items-center justify-center">
+    <main class="h-10/12 w-full flex flex-col justify-evenly items-center">
+        <h1 class="font-bold text-center text-2xl">REGISTRARSE</h1>
+
+        <form class="w-10/12 md:w-7/12 lg:w-4/12 flex flex-col items-start justify-evenly" action="" method="post" autocomplete="off">
+            {% csrf_token %}
+            <div>
+                <label class="block mb-2.5 text-lg font-medium" for="id_username">Usuario</label>
+                <input class="w-2xs md:w-sm lg:w-md bg-neutral-100 block border {% if form.username.errors %} border-red-700 {% else %} border-neutral-200 {% endif %} p-2 rounded-md shadow-xs text-lg focus:ring-2" value="{{ form.username.value|default:'' }}" type="text" name="username" id="id_username" maxlength="150" placeholder="Nombre de usuario..." required>
+                {% if form.username.errors %}
+                    <p class="mt-1 text-lg text-red-700">{{ form.username.errors.0 }}</p>
+                {% endif %}
+                <span class="mt-1 text-lg text-gray-500 dark:text-gray-300">El nombre de usuario debe tener 150 caracteres o menos y solo puede contener letras, números y @/./+/_.</span>
+            </div>
+
+            <div>
+                <label class="block mb-2.5 text-lg font-medium" for="id_password1">Contraseña</label>
+                <input class="w-2xs md:w-sm lg:w-md bg-neutral-100 block border {% if form.password1.errors %} border-red-700 {% else %} border-neutral-200 {% endif %} p-2 rounded-md shadow-xs text-lg focus:ring-2" type="password" name="password1" id="id_password1" placeholder="Contraseña..." required>
+                    {% if form.password1.errors %}
+                        {% for error in form.password1.errors %}
+                            <p class="mt-1 text-lg text-red-700">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                <span class="mt-1 text-lg text-gray-500 dark:text-gray-300">La contraseña no puede ser similar a tu nombre de usuario, tener menos de 8 caracteres, ser solo numérica ni ser común.</span>
+            </div>
+
+            <div>
+                <label class="block mb-2.5 text-lg font-medium" for="id_password2">Repita la contraseña</label>
+                <input class="w-2xs md:w-sm lg:w-md bg-neutral-100 block border {% if form.password2.errors %} border-red-700 {% else %} border-neutral-200 {% endif %} p-2 rounded-md shadow-xs text-lg focus:ring-2" type="password" name="password2" id="id_password2" placeholder="Repetir contraseña..." required>
+                {% if form.password2.errors %}
+                        {% for error in form.password2.errors %}
+                            <p class="mt-1 text-lg text-red-700">{{ error }}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% if form.non_field_errors %}
+                    {% for error in form.non_field_errors %}
+                    <p class="mt-1 text-lg text-red-700">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+                <span class="mt-1 text-lg text-gray-500 dark:text-gray-300">Introduzca la misma contraseña, para verificarla.</span>
+            </div>
+
+            <div class="w-full flex items-center justify-end">
+                <button class="bg-neutral-100 block border border-neutral-200 cursor-pointer p-2 rounded-md shadow-xs text-lg focus:ring-2" type="submit">Registrarse</button>
+            </div>
+        </form>
+
+        <p>Si ya tienes cuenta, inicia sesión <a class="font-bold underline" href="/login/">aquí</a>.</p>
+    </main>
+</body>
+</html>

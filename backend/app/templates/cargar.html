@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Auditoría{% endblock %}
+
+{% block content %}
+    <main class="h-9/12 mt-10 flex flex-col justify-center items-center">
+        <h1 class="font-bold text-center text-2xl">REALIZAR AUDITORÍA</h1>
+
+        <form class="h-2/3 w-10/12 md:w-7/12 lg:w-3/12 flex flex-col items-start justify-evenly" id="formulario" action="/respuesta/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div>
+                <label class="block mb-2.5 text-lg font-medium" for="archivo">Suba un contrato</label>
+                <input class="w-2xs md:w-sm bg-neutral-100 block border border-neutral-200 cursor-pointer p-2 rounded-md shadow-xs text-lg focus:ring-2" type="file" name="archivo" id="archivo" accept=".pdf" required>
+                <span class="mt-1 text-lg text-gray-500 dark:text-gray-300">PDF</span>
+            </div>
+            
+            <div>
+                <label class="block mb-2.5 text-lg font-medium" for="tipo">Seleccione el tipo de contrato</label>
+                <select class="w-2xs md:w-sm bg-neutral-100 block border border-neutral-200 cursor-pointer p-2 rounded-md shadow-xs text-lg focus:ring-2" name="tipo" id="tipo" required>
+                    <option value="alquiler">Alquiler</option>
+                    <option value="nda">NDA</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block mb-2.5 text-lg font-medium" for="cliente">Nombre del cliente</label>
+                <input class="w-2xs md:w-sm bg-neutral-100 block border border-neutral-200 p-2 rounded-md shadow-xs text-lg focus:ring-2" type="text" name="cliente" id="cliente" placeholder="Nombre del cliente..." required>
+            </div>
+            
+            <div class="w-full flex items-center justify-end">
+                <button class="bg-neutral-100 block border border-neutral-200 cursor-pointer p-2 rounded-md shadow-xs text-lg focus:ring-2" id="btn_enviar" type="submit">Enviar</button>
+            </div>
+        </form>
+    </main>
+
+    <article class="h-1/12 w-full flex items-end justify-end px-10">
+        <a class="font-bold text-right text-lg" href="/">VOLVER</a>
+    </article>
+
+    <script>
+        const formulario = document.getElementById("formulario")
+        const boton = document.getElementById("btn_enviar")
+
+        formulario.addEventListener("submit", function() {
+            boton.disabled = true;
+            boton.classList.add("opacity-50", "cursor-not-allowed");
+            boton.innerText = "Revisando contrato...";
+        })
+    </script>
+{% endblock %}
