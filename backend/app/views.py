@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.views.generic import View, CreateView
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
+from django.core.paginator import Paginator
 import requests
 import base64
 from app.models import Auditoria
@@ -72,8 +73,12 @@ class DashboardView(LoginRequiredMixin, View):
     template_name = 'listado.html'
 
     def get(self, request):
-        auditorias = Auditoria.objects.filter(creador=request.user).order_by("fecha")
-        return render(request, self.template_name, {"auditorias": auditorias})
+        auditorias = Auditoria.objects.filter(creador=request.user).order_by("-fecha")
+        paginador = Paginator(auditorias, 5)
+        n_pagina = request.GET.get("pagina")
+        pagina = paginador.get_page(n_pagina)
+
+        return render(request, self.template_name, {"auditorias": pagina})
 
 class AnonymousMixin(UserPassesTestMixin):
     # Clase que verifica que el usuario no ha iniciado sesión

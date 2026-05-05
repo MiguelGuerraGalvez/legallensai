@@ -3,7 +3,7 @@
 {% block title %}Listado{% endblock %}
 
 {% block content %}
-    <main class="h-11/12 flex items-center justify-center overflow-x-auto relative">
+    <main class="h-11/12 flex flex-col items-center justify-center overflow-x-auto relative">
         <table class="w-10/12 border border-black rounded-b-md text-xs md:text-lg text-center overflow-scroll">
             <thead class="md:text-lg bg-neutral-300 border-b border-black">
                 <tr>
@@ -32,5 +32,23 @@
                 {% endfor %}
             </tbody>
         </table>
+        <div class="w-full flex items-center justify-around font-bold text-center py-2">
+            {% if auditorias.has_previous %}
+                <a class="cursor-pointer underline" href="?pagina=1">Primera Página</a>
+                <a class="cursor-pointer underline" href="?pagina={{ auditorias.previous_page_number }}">Página Anterior</a>
+            {% else %}
+                <span class="cursor-not-allowed underline">Primera Página</span>
+                <span class="cursor-not-allowed underline">Página Anterior</span>
+            {% endif %}
+
+            <p>Página <span>{{ auditorias.number }}</span> de <span>{{ auditorias.paginator.num_pages }}</span></p>
+            {% if auditorias.has_next %}
+                <a class="cursor-pointer underline" href="?pagina={{ auditorias.next_page_number }}">Página Siguiente</a>
+                <a class="cursor-pointer underline" href="?pagina={{ auditorias.paginator.num_pages }}">Última Página</a>
+            {% else %}
+                <span class="cursor-not-allowed underline">Página Siguiente</span>
+                <span class="cursor-not-allowed underline">Última Página</span>
+            {% endif %}
+        </div>
     </main>
 {% endblock %}
